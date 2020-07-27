@@ -27,29 +27,34 @@ class Crud:
     def getSignleNode(self, id):
         query = "MATCH (n) where id(n)={id} return (n)".format(id=id) # Query for Get single Node from database
         node = self.session.run(query)
-        print(node.data())
         return node
 
     def updateNode(self):
-        pass
+        query = "MERGE (n:Employee {name: 'Mehak'})SET n.age = 100, n.coat = 'Yellow' RETURN n"
+        node = self.session.run(query)
+        self.session.commit()
+        return node
 
     def deleteNode(self):
         query= "MATCH (n) DETACH DELETE "
-        self.session.run(query)
-        return True
+        nodes = self.session.run(query)
+        return nodes
 
     def deleteSingleRelationalNode(self, id):
-        query = "MATCH (n) DETACH DELETE where id(n)={id}".format(id=id)
+        query = "MATCH (n) WHERE id(n)={id} DETACH DELETE (n)".format(id=id)
         node = self.session.run(query)
-        return True
+        return node
 
 obj = Crud()
-
 obj.getAllNode()
-obj.createNode(name="Ajay", age=27, department= "networking")
+obj.createNode(name="Mehak", age=27, department= "networking")
+obj.updateNode()
+obj.getAllNode()
 frm = obj.getSignleNode(0)
 relation = "KNOWS"
 to = obj.getSignleNode(4)
 obj.createRelationship(frm, relation, to)
 obj.deleteSingleRelationalNode(3)
+
+
 
